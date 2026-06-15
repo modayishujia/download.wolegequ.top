@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>素材下载器</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--card:#12121a;--border:#1e1e2e;--accent:#6c5ce7;--accent2:#a29bfe;--text:#e0e0e0;--text2:#888;--green:#00b894;--red:#ff6b6b;--orange:#fdcb6e}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+.logo{font-size:48px;margin-bottom:8px}
+h1{font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.subtitle{color:var(--text2);font-size:14px;margin-bottom:40px}
+.container{width:100%;max-width:680px}
+.input-group{display:flex;gap:10px;margin-bottom:20px}
+#urlInput{flex:1;padding:14px 18px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;outline:none;transition:border-color .2s}
+#urlInput:focus{border-color:var(--accent)}
+#urlInput::placeholder{color:#555}
+#fetchBtn{padding:14px 28px;background:linear-gradient(135deg,var(--accent),#8b7cf7);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;white-space:nowrap}
+#fetchBtn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(108,92,231,.4)}
+#fetchBtn:active{transform:translateY(0)}
+#fetchBtn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.platform-hint{display:flex;gap:10px;margin-bottom:30px;flex-wrap:wrap}
+.platform-tag{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--text2)}
+.platform-tag .icon{font-size:16px}
+.status{padding:16px;border-radius:12px;margin-bottom:20px;font-size:14px;display:none}
+.status.show{display:flex;align-items:center;gap:10px}
+.status.loading{background:rgba(108,92,231,.1);border:1px solid rgba(108,92,231,.3);color:var(--accent2)}
+.status.error{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);color:var(--red)}
+.status.success{background:rgba(0,184,148,.1);border:1px solid rgba(0,184,148,.3);color:var(--green)}
+.spinner{width:18px;height:18px;border:2.5px solid rgba(108,92,231,.3);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.result-header{padding:20px;border-bottom:1px solid var(--border);display:flex;gap:16px;align-items:flex-start}
+.result-thumb{width:140px;height:90px;border-radius:10px;object-fit:cover;background:#1a1a2e;flex-shrink:0}
+.result-info{flex:1;min-width:0}
+.result-info h3{font-size:15px;font-weight:600;margin-bottom:6px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;line-height:1.4}
+.result-meta{display:flex;gap:12px;flex-wrap:wrap}
+.result-meta span{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px}
+.download-list{padding:16px 20px}
+.download-list h4{font-size:13px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.download-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;transition:border-color .2s}
+.download-item:hover{border-color:var(--accent)}
+.dl-info{display:flex;align-items:center;gap:12px;min-width:0}
+.dl-badge{padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;flex-shrink:0}
+.badge-video{background:rgba(108,92,231,.15);color:var(--accent2)}
+.badge-audio{background:rgba(0,184,148,.15);color:var(--green)}
+.badge-image{background:rgba(253,203,110,.15);color:var(--orange)}
+.dl-detail{font-size:13px;color:var(--text2)}
+.dl-btn{padding:8px 18px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
+.dl-btn:hover{background:#7d6ef0}
+.dl-btn.audio{background:var(--green)}
+.dl-btn.audio:hover{background:#00a884}
+.history-section{margin-top:30px;width:100%;max-width:680px}
+.history-section h4{font-size:13px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.clear-history{font-size:12px;color:var(--text2);cursor:pointer;border:none;background:none;padding:4px 8px;border-radius:6px}
+.clear-history:hover{color:var(--red);background:rgba(255,107,107,.1)}
+.history-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:border-color .2s}
+.history-item:hover{border-color:var(--accent)}
+.history-item .icon{font-size:20px;flex-shrink:0}
+.history-item .url{font-size:13px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.history-item .time{font-size:11px;color:#555;flex-shrink:0}
+footer{margin-top:auto;padding-top:40px;text-align:center;color:#333;font-size:12px}
+</style>
+</head>
+<body>
+<div class="logo">&#128229;</div>
+<h1>素材下载器</h1>
+<p class="subtitle">粘贴链接，自动识别平台，获取真实下载地址</p>
+<div class="container">
+<div class="input-group">
+<input type="text" id="urlInput" placeholder="粘贴 Twitter / YouTube 链接..." autocomplete="off">
+<button id="fetchBtn" onclick="handleFetch()">解析下载</button>
+</div>
+<div class="platform-hint">
+<span class="platform-tag"><span class="icon">&#127909;</span> YouTube</span>
+<span class="platform-tag"><span class="icon">&#128172;</span> Twitter / X</span>
+</div>
+<div id="status" class="status"></div>
+<div id="result"></div>
+</div>
+<div class="history-section">
+<h4>历史记录 <button class="clear-history" onclick="clearHistory()">清空</button></h4>
+<div id="history"></div>
+</div>
+<footer>Powered by Workers API &middot; 仅供个人学习使用</footer>
+<script>
+const $ = s => document.querySelector(s);
+const urlInput = $('#urlInput');
+const fetchBtn = $('#fetchBtn');
+const statusEl = $('#status');
+const resultEl = $('#result');
+const historyEl = $('#history');
+
+function detectPlatform(url) {
+  try {
+    const u = new URL(url);
+    const h = u.hostname.replace('www.', '');
+    if (h === 'youtube.com' || h === 'youtu.be' || h === 'm.youtube.com')
+      return { key: 'youtube', icon: '&#127909;', name: 'YouTube' };
+    if (h === 'twitter.com' || h === 'x.com' || h === 'mobile.twitter.com')
+      return { key: 'twitter', icon: '&#128172;', name: 'Twitter / X' };
+  } catch {}
+  return null;
+}
+
+function showStatus(type, msg) {
+  statusEl.className = 'status show ' + type;
+  statusEl.innerHTML = type === 'loading'
+    ? `<div class="spinner"></div><span>${msg}</span>`
+    : `<span>${msg}</span>`;
+}
+function hideStatus() { statusEl.className = 'status'; }
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+let cooldownTimer = null;
+let lastFetch = 0;
+const CLIENT_COOLDOWN = 3000;
+
+async function handleFetch() {
+  if (cooldownTimer) return;
+
+  const now = Date.now();
+  const elapsed = now - lastFetch;
+  if (elapsed < CLIENT_COOLDOWN) {
+    const wait = Math.ceil((CLIENT_COOLDOWN - elapsed) / 1000);
+    showStatus('error', `操作太频繁，请 ${wait} 秒后再试`);
+    return;
+  }
+
+  const rawUrl = urlInput.value.trim();
+  if (!rawUrl) { showStatus('error', '请输入链接地址'); return; }
+
+  let url = rawUrl;
+  if (!url.startsWith('http')) url = 'https://' + url;
+
+  const platform = detectPlatform(url);
+  if (!platform) {
+    showStatus('error', '暂不支持该平台，目前支持 YouTube 和 Twitter/X');
+    return;
+  }
+
+  lastFetch = now;
+  fetchBtn.disabled = true;
+  showStatus('loading', `正在解析 ${platform.name} 链接...`);
+  resultEl.innerHTML = '';
+
+  try {
+    let data;
+    if (platform.key === 'youtube') {
+      data = await fetchYouTube(url);
+    } else if (platform.key === 'twitter') {
+      data = await fetchTwitter(url);
+    }
+
+    hideStatus();
+    if (data) {
+      renderResult(data, url, platform);
+      addHistory(url, platform);
+    }
+  } catch (e) {
+    showStatus('error', '解析失败：' + (e.message || '请稍后重试'));
+  } finally {
+    fetchBtn.disabled = false;
+  }
+}
+
+function startCooldown(seconds) {
+  fetchBtn.disabled = true;
+  let remaining = seconds;
+  const tick = () => {
+    if (remaining <= 0) {
+      cooldownTimer = null;
+      fetchBtn.disabled = false;
+      hideStatus();
+      return;
+    }
+    showStatus('error', `请求过于频繁，请 ${remaining} 秒后重试`);
+    remaining--;
+    cooldownTimer = setTimeout(tick, 1000);
+  };
+  tick();
+}
+
+async function apiFetch(path) {
+  const resp = await fetch(path);
+  if (resp.status === 429) {
+    const data = await resp.json();
+    const retry = data.retryAfter || 60;
+    startCooldown(retry);
+    throw new Error(data.message || `请求过于频繁，请 ${retry} 秒后重试`);
+  }
+  const data = await resp.json();
+  if (data.error) throw new Error(data.message || data.error);
+  return data;
+}
+
+async function fetchYouTube(url) {
+  return apiFetch('/api/yt?url=' + encodeURIComponent(url));
+}
+
+async function fetchTwitter(url) {
+  const data = await apiFetch('/api/twitter?url=' + encodeURIComponent(url));
+  if (!data.ok && data.error) throw new Error(data.message || data.error);
+  return data;
+}
+
+function renderResult(data, url, platform) {
+  if (platform.key === 'youtube') renderYouTube(data, url, platform);
+  else if (platform.key === 'twitter') renderTwitter(data, url, platform);
+}
+
+function renderYouTube(data, url, platform) {
+  const thumb = data.thumbnail || `https://i.ytimg.com/vi/${data.videoId}/hqdefault.jpg`;
+  const dur = data.duration ? formatDuration(data.duration) : '';
+
+  let html = `<div class="result-card">
+    <div class="result-header">
+      <img class="result-thumb" src="${esc(thumb)}" onerror="this.style.display='none'" alt="">
+      <div class="result-info">
+        <h3>${esc(data.title)}</h3>
+        <div class="result-meta">
+          <span>&#128100; ${esc(data.author)}</span>
+          ${dur ? `<span>&#9201; ${dur}</span>` : ''}
+          <span>&#128279; <a href="${esc(url)}" target="_blank" style="color:var(--accent2);text-decoration:none">原始链接</a></span>
+        </div>
+      </div>
+    </div>
+    <div class="download-list">`;
+
+  if (data.videos?.length) {
+    html += `<h4>&#127909; 视频下载 (含音频)</h4>`;
+    const merged = findMergedVideoAudio(data.videos, data.audios);
+    for (const v of merged) {
+      html += `<div class="download-item">
+        <div class="dl-info">
+          <span class="dl-badge badge-video">${esc(v.quality)}</span>
+          <span class="dl-detail">${esc(v.desc)}</span>
+        </div>
+        <a class="dl-btn" href="${esc(v.url)}" target="_blank" rel="noopener">&#11015; 下载</a>
+      </div>`;
+    }
+  }
+
+  if (data.audios?.length) {
+    html += `<h4 style="margin-top:16px">&#127925; 仅音频</h4>`;
+    for (const a of data.audios) {
+      const br = a.bitrate ? Math.round(a.bitrate / 1000) + 'kbps' : '';
+      html += `<div class="download-item">
+        <div class="dl-info">
+          <span class="dl-badge badge-audio">MP3 / ${esc(br)}</span>
+          <span class="dl-detail">${esc(a.mimeType.split(';')[0])}</span>
+        </div>
+        <a class="dl-btn audio" href="${esc(a.url)}" target="_blank" rel="noopener">&#11015; 下载</a>
+      </div>`;
+    }
+  }
+
+  html += '</div></div>';
+  resultEl.innerHTML = html;
+}
+
+function findMergedVideoAudio(videos, audios) {
+  const bestAudio = audios?.[0];
+  const results = [];
+  const seen = new Set();
+  for (const v of videos) {
+    const key = v.height + 'p';
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const hasAudioTrack = v.hasAudio;
+    results.push({
+      quality: key,
+      url: v.url,
+      desc: `${v.width}x${v.height}` + (v.fps ? ` ${v.fps}fps` : '') + (hasAudioTrack ? ' (含音频)' : ' (仅视频)'),
+    });
+    if (results.length >= 5) break;
+  }
+  return results;
+}
+
+function renderTwitter(data, url, platform) {
+  const firstMedia = data.media?.[0];
+  const thumb = firstMedia?.type === 'photo' ? firstMedia.url : '';
+
+  let html = `<div class="result-card">
+    <div class="result-header">
+      ${thumb ? `<img class="result-thumb" src="${esc(thumb)}" onerror="this.style.display='none'" alt="">` : ''}
+      <div class="result-info">
+        <h3>${esc(data.text || 'Twitter 媒体')}</h3>
+        <div class="result-meta">
+          ${data.author ? `<span>&#64;${esc(data.author)}</span>` : ''}
+          <span>共 ${data.media.length} 个媒体文件</span>
+          <span>&#128279; <a href="${esc(url)}" target="_blank" style="color:var(--accent2);text-decoration:none">原始链接</a></span>
+        </div>
+      </div>
+    </div>
+    <div class="download-list">
+      <h4>下载选项</h4>`;
+
+  data.media.forEach((m, i) => {
+    if (m.type === 'photo') {
+      html += `<div class="download-item">
+        <div class="dl-info">
+          <span class="dl-badge badge-image">&#128247; 图片 #${i + 1}</span>
+          <span class="dl-detail">原始分辨率</span>
+        </div>
+        <a class="dl-btn" href="${esc(m.url)}" target="_blank" rel="noopener">&#11015; 下载</a>
+      </div>`;
+    } else if (m.type === 'video' || m.type === 'gif') {
+      const label = m.type === 'gif' ? 'GIF' : '视频';
+      if (m.variants?.length > 1) {
+        html += `<h4 style="margin-top:12px">${m.type === 'gif' ? '&#127909;' : '&#127909;'} ${label} #${i + 1} - 选择画质</h4>`;
+        const unique = [];
+        const brSeen = new Set();
+        for (const v of m.variants) {
+          const br = v.bitrate || 0;
+          const brLabel = br ? Math.round(br / 1000) + 'kbps' : '标准';
+          if (brSeen.has(brLabel)) continue;
+          brSeen.add(brLabel);
+          unique.push({ ...v, brLabel });
+          if (unique.length >= 4) break;
+        }
+        for (const v of unique) {
+          html += `<div class="download-item">
+            <div class="dl-info">
+              <span class="dl-badge badge-video">${esc(v.brLabel)}</span>
+              <span class="dl-detail">MP4</span>
+            </div>
+            <a class="dl-btn" href="${esc(v.url)}" target="_blank" rel="noopener">&#11015; 下载</a>
+          </div>`;
+        }
+      } else {
+        html += `<div class="download-item">
+          <div class="dl-info">
+            <span class="dl-badge badge-video">&#127909; ${label} #${i + 1}</span>
+            <span class="dl-detail">MP4</span>
+          </div>
+          <a class="dl-btn" href="${esc(m.url)}" target="_blank" rel="noopener">&#11015; 下载</a>
+        </div>`;
+      }
+    }
+  });
+
+  html += '</div></div>';
+  resultEl.innerHTML = html;
+}
+
+function formatDuration(sec) {
+  const s = parseInt(sec);
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return m + ':' + String(r).padStart(2, '0');
+}
+
+urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleFetch(); });
+urlInput.addEventListener('paste', () => {
+  setTimeout(() => {
+    const v = urlInput.value.trim();
+    if (v) {
+      const p = detectPlatform(v.startsWith('http') ? v : 'https://' + v);
+      if (p) showStatus('success', `已识别: ${p.name}`);
+      else hideStatus();
+    }
+  }, 100);
+});
+
+function getHistory() { try { return JSON.parse(localStorage.getItem('dl_history') || '[]'); } catch { return []; } }
+function addHistory(url, platform) {
+  let h = getHistory();
+  h.unshift({ url, platform: platform.name, icon: platform.icon, time: Date.now() });
+  if (h.length > 20) h = h.slice(0, 20);
+  localStorage.setItem('dl_history', JSON.stringify(h));
+  renderHistory();
+}
+function renderHistory() {
+  const h = getHistory();
+  if (!h.length) { historyEl.innerHTML = ''; return; }
+  historyEl.innerHTML = h.map(i =>
+    `<div class="history-item" onclick="urlInput.value='${i.url.replace(/'/g, "\\'")}';handleFetch()">
+      <span class="icon">${i.icon || '&#128279;'}</span>
+      <span class="url">${esc(i.url)}</span>
+      <span class="time">${timeAgo(i.time)}</span>
+    </div>`
+  ).join('');
+}
+function timeAgo(t) {
+  const s = Math.floor((Date.now() - t) / 1000);
+  if (s < 60) return '刚刚';
+  if (s < 3600) return Math.floor(s / 60) + '分钟前';
+  if (s < 86400) return Math.floor(s / 3600) + '小时前';
+  return Math.floor(s / 86400) + '天前';
+}
+function clearHistory() { localStorage.removeItem('dl_history'); renderHistory(); }
+renderHistory();
+</script>
+</body>
+</html>
