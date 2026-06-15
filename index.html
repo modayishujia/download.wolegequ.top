@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>素材下载器</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6979809011861753" crossorigin="anonymous"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a0f;--card:#12121a;--border:#1e1e2e;--accent:#6c5ce7;--accent2:#a29bfe;--text:#e0e0e0;--text2:#888;--green:#00b894;--red:#ff6b6b;--orange:#fdcb6e}
@@ -62,6 +63,10 @@ h1{font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--accent
 .history-item .url{font-size:13px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
 .history-item .time{font-size:11px;color:#555;flex-shrink:0}
 footer{margin-top:auto;padding-top:40px;text-align:center;color:#333;font-size:12px}
+.ad-container{width:100%;max-width:680px;margin:20px 0;text-align:center;min-height:90px}
+.ad-container ins{display:block}
+.ad-between{margin-top:24px}
+.ad-bottom{margin-top:30px}
 </style>
 </head>
 <body>
@@ -79,10 +84,37 @@ footer{margin-top:auto;padding-top:40px;text-align:center;color:#333;font-size:1
 </div>
 <div id="status" class="status"></div>
 <div id="result"></div>
+<div class="ad-container ad-between">
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6979809011861753"
+     data-ad-slot="auto"
+     data-ad-format="horizontal"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+</div>
+<div class="ad-container ad-bottom">
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6979809011861753"
+     data-ad-slot="auto"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 <div class="history-section">
 <h4>历史记录 <button class="clear-history" onclick="clearHistory()">清空</button></h4>
 <div id="history"></div>
+</div>
+<div class="ad-container">
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6979809011861753"
+     data-ad-slot="auto"
+     data-ad-format="autorelaxed"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 <footer>Powered by Workers API &middot; 仅供个人学习使用</footer>
 <script>
