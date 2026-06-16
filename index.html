@@ -3,7 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>素材下载器</title>
+<meta name="description" content="Free online video and audio downloader. Download YouTube videos, Twitter/X media instantly. Supports multiple formats and qualities.">
+<meta name="keywords" content="video downloader, YouTube downloader, Twitter downloader, X downloader, media downloader, free video download, online downloader, 素材下载器, 视频下载, ダウンロード">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Wolegequ Downloader">
+<meta name="theme-color" content="#6c5ce7">
+<link rel="canonical" href="https://download.wolegequ.top/">
+<link rel="alternate" hreflang="zh-CN" href="https://download.wolegequ.top/?lang=zh-CN">
+<link rel="alternate" hreflang="en" href="https://download.wolegequ.top/?lang=en">
+<link rel="alternate" hreflang="ja" href="https://download.wolegequ.top/?lang=ja">
+<link rel="alternate" hreflang="ko" href="https://download.wolegequ.top/?lang=ko">
+<link rel="alternate" hreflang="es" href="https://download.wolegequ.top/?lang=es">
+<link rel="alternate" hreflang="fr" href="https://download.wolegequ.top/?lang=fr">
+<link rel="alternate" hreflang="de" href="https://download.wolegequ.top/?lang=de">
+<link rel="alternate" hreflang="pt" href="https://download.wolegequ.top/?lang=pt">
+<link rel="alternate" hreflang="ru" href="https://download.wolegequ.top/?lang=ru">
+<link rel="alternate" hreflang="ar" href="https://download.wolegequ.top/?lang=ar">
+<link rel="alternate" hreflang="x-default" href="https://download.wolegequ.top/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬇️</text></svg>">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://download.wolegequ.top/">
+<meta property="og:title" content="Wolegequ Downloader - Free Video & Media Downloader">
+<meta property="og:description" content="Download YouTube videos, Twitter/X media for free. Paste link, auto-detect platform, get download URL instantly.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:locale:alternate" content="ko_KR">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wolegequ Downloader - Free Video & Media Downloader">
+<meta name="twitter:description" content="Download YouTube videos, Twitter/X media for free. Paste link, auto-detect platform, get download URL instantly.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Wolegequ Downloader",
+  "url": "https://download.wolegequ.top",
+  "description": "Free online video and audio downloader for YouTube and Twitter/X media.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "All",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": ["YouTube video download", "Twitter media download", "Multiple quality options", "Audio extraction"]
+}
+</script>
+
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6979809011861753" crossorigin="anonymous"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -67,12 +112,29 @@ footer{margin-top:auto;padding-top:40px;text-align:center;color:#333;font-size:1
 .ad-container ins{display:block}
 .ad-between{margin-top:24px}
 .ad-bottom{margin-top:30px}
+.lang-switcher{position:fixed;top:16px;right:16px;z-index:100}
+.lang-btn{padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:13px;cursor:pointer;transition:border-color .2s;display:flex;align-items:center;gap:6px}
+.lang-btn:hover{border-color:var(--accent);color:var(--text)}
+.lang-dropdown{position:absolute;top:100%;right:0;margin-top:4px;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;min-width:160px;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.lang-dropdown.show{display:block}
+.lang-option{padding:10px 16px;font-size:13px;color:var(--text2);cursor:pointer;transition:background .15s;text-align:left;border:none;background:none;width:100%;display:block}
+.lang-option:hover{background:rgba(108,92,231,.1);color:var(--text)}
+.lang-option.active{color:var(--accent2);font-weight:600}
 </style>
 </head>
 <body>
+<div class="lang-switcher">
+  <button class="lang-btn" id="langBtn" onclick="toggleLangMenu()">
+    <span id="langIcon">🌐</span>
+    <span id="langLabel">中文</span>
+    <span style="font-size:10px">▼</span>
+  </button>
+  <div class="lang-dropdown" id="langDropdown"></div>
+</div>
+
 <div class="logo">&#128229;</div>
-<h1>素材下载器</h1>
-<p class="subtitle">粘贴链接，自动识别平台，获取真实下载地址</p>
+<h1 id="titleText">素材下载器</h1>
+<p class="subtitle" id="subtitleText">粘贴链接，自动识别平台，获取真实下载地址</p>
 <div class="container">
 <div class="input-group">
 <input type="text" id="urlInput" placeholder="粘贴 Twitter / YouTube 链接..." autocomplete="off">
@@ -104,7 +166,7 @@ footer{margin-top:auto;padding-top:40px;text-align:center;color:#333;font-size:1
 <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 <div class="history-section">
-<h4>历史记录 <button class="clear-history" onclick="clearHistory()">清空</button></h4>
+<h4><span id="historyTitle">历史记录</span> <button class="clear-history" onclick="clearHistory()" id="clearBtn">清空</button></h4>
 <div id="history"></div>
 </div>
 <div class="ad-container">
@@ -116,8 +178,436 @@ footer{margin-top:auto;padding-top:40px;text-align:center;color:#333;font-size:1
      data-full-width-responsive="true"></ins>
 <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
-<footer>Powered by Workers API &middot; 仅供个人学习使用</footer>
+<footer id="footerText">Powered by Workers API &middot; 仅供个人学习使用</footer>
 <script>
+const T = {
+  'zh-CN': {
+    title: '素材下载器',
+    subtitle: '粘贴链接，自动识别平台，获取真实下载地址',
+    placeholder: '粘贴 Twitter / YouTube 链接...',
+    btn: '解析下载',
+    history: '历史记录',
+    clear: '清空',
+    footer: 'Powered by Workers API · 仅供个人学习使用',
+    langLabel: '中文',
+    tooFrequent: s => `操作太频繁，请 ${s} 秒后再试`,
+    emptyUrl: '请输入链接地址',
+    unsupported: '暂不支持该平台，目前支持 YouTube 和 Twitter/X',
+    parsing: name => `正在解析 ${name} 链接...`,
+    parseFail: msg => '解析失败：' + (msg || '请稍后重试'),
+    identified: name => `已识别: ${name}`,
+    tooFrequentRetry: s => `请求过于频繁，请 ${s} 秒后重试`,
+    videoDownload: '视频下载 (含音频)',
+    audioOnly: '仅音频',
+    download: '下载',
+    originalLink: '原始链接',
+    downloadOptions: '下载选项',
+    image: '图片',
+    selectQuality: '选择画质',
+    standard: '标准',
+    hasAudio: '含音频',
+    videoOnly: '仅视频',
+    mediaFiles: n => `共 ${n} 个媒体文件`,
+    twitterMedia: 'Twitter 媒体',
+    justNow: '刚刚',
+    minutesAgo: n => `${n}分钟前`,
+    hoursAgo: n => `${n}小时前`,
+    daysAgo: n => `${n}天前`,
+    ogTitle: '素材下载器 - 免费在线视频下载工具',
+    ogDesc: '免费下载 YouTube 视频、Twitter/X 媒体。粘贴链接，自动识别平台，即时获取下载地址。',
+  },
+  'en': {
+    title: 'Media Downloader',
+    subtitle: 'Paste a link, auto-detect the platform, get the real download URL',
+    placeholder: 'Paste Twitter / YouTube link...',
+    btn: 'Download',
+    history: 'History',
+    clear: 'Clear',
+    footer: 'Powered by Workers API · For personal use only',
+    langLabel: 'English',
+    tooFrequent: s => `Too frequent, please try again in ${s}s`,
+    emptyUrl: 'Please enter a URL',
+    unsupported: 'Unsupported platform. Currently supports YouTube and Twitter/X',
+    parsing: name => `Parsing ${name} link...`,
+    parseFail: msg => 'Parse failed: ' + (msg || 'Please try again later'),
+    identified: name => `Detected: ${name}`,
+    tooFrequentRetry: s => `Too many requests, please retry in ${s}s`,
+    videoDownload: 'Video (with audio)',
+    audioOnly: 'Audio Only',
+    download: 'Download',
+    originalLink: 'Original Link',
+    downloadOptions: 'Download Options',
+    image: 'Image',
+    selectQuality: 'Select Quality',
+    standard: 'Standard',
+    hasAudio: 'With Audio',
+    videoOnly: 'Video Only',
+    mediaFiles: n => `${n} media file(s)`,
+    twitterMedia: 'Twitter Media',
+    justNow: 'Just now',
+    minutesAgo: n => `${n}m ago`,
+    hoursAgo: n => `${n}h ago`,
+    daysAgo: n => `${n}d ago`,
+    ogTitle: 'Media Downloader - Free Online Video Download Tool',
+    ogDesc: 'Download YouTube videos, Twitter/X media for free. Paste link, auto-detect platform, get download URL instantly.',
+  },
+  'ja': {
+    title: 'メディアダウンローダー',
+    subtitle: 'リンクを貼り付けると、プラットフォームを自動認識しダウンロードURLを取得',
+    placeholder: 'Twitter / YouTube のリンクを貼り付け...',
+    btn: 'ダウンロード',
+    history: '履歴',
+    clear: 'クリア',
+    footer: 'Powered by Workers API · 個人の学習目的のみ',
+    langLabel: '日本語',
+    tooFrequent: s => `操作が頻繁すぎます。${s}秒後にもう一度お試しください`,
+    emptyUrl: 'URLを入力してください',
+    unsupported: '未対応のプラットフォームです。現在 YouTube と Twitter/X をサポートしています',
+    parsing: name => `${name} リンクを解析中...`,
+    parseFail: msg => '解析失敗：' + (msg || '後でもう一度お試しください'),
+    identified: name => `検出: ${name}`,
+    tooFrequentRetry: s => `リクエストが多すぎます。${s}秒後に再試行してください`,
+    videoDownload: '動画（音声付き）',
+    audioOnly: '音声のみ',
+    download: 'ダウンロード',
+    originalLink: '元のリンク',
+    downloadOptions: 'ダウンロードオプション',
+    image: '画像',
+    selectQuality: '画質を選択',
+    standard: '標準',
+    hasAudio: '音声付き',
+    videoOnly: '動画のみ',
+    mediaFiles: n => `メディア ${n} 件`,
+    twitterMedia: 'Twitter メディア',
+    justNow: 'たった今',
+    minutesAgo: n => `${n}分前`,
+    hoursAgo: n => `${n}時間前`,
+    daysAgo: n => `${n}日前`,
+    ogTitle: 'メディアダウンローダー - 無料オンライン動画ダウンロードツール',
+    ogDesc: 'YouTube 動画、Twitter/X メディアを無料でダウンロード。リンクを貼り付けるだけで即座にダウンロードURLを取得。',
+  },
+  'ko': {
+    title: '미디어 다운로더',
+    subtitle: '링크를 붙여넣으면 플랫폼을 자동 감지하여 다운로드 URL 제공',
+    placeholder: 'Twitter / YouTube 링크 붙여넣기...',
+    btn: '다운로드',
+    history: '기록',
+    clear: '지우기',
+    footer: 'Powered by Workers API · 개인 학습용',
+    langLabel: '한국어',
+    tooFrequent: s => `너무 잦은 요청입니다. ${s}초 후 다시 시도해주세요`,
+    emptyUrl: 'URL을 입력해주세요',
+    unsupported: '지원하지 않는 플랫폼입니다. 현재 YouTube와 Twitter/X를 지원합니다',
+    parsing: name => `${name} 링크 분석 중...`,
+    parseFail: msg => '분석 실패: ' + (msg || '나중에 다시 시도해주세요'),
+    identified: name => `감지됨: ${name}`,
+    tooFrequentRetry: s => `요청이 너무 많습니다. ${s}초 후 다시 시도하세요`,
+    videoDownload: '동영상 (오디오 포함)',
+    audioOnly: '오디오만',
+    download: '다운로드',
+    originalLink: '원본 링크',
+    downloadOptions: '다운로드 옵션',
+    image: '이미지',
+    selectQuality: '화질 선택',
+    standard: '표준',
+    hasAudio: '오디오 포함',
+    videoOnly: '동영상만',
+    mediaFiles: n => `미디어 ${n}개`,
+    twitterMedia: 'Twitter 미디어',
+    justNow: '방금',
+    minutesAgo: n => `${n}분 전`,
+    hoursAgo: n => `${n}시간 전`,
+    daysAgo: n => `${n}일 전`,
+    ogTitle: '미디어 다운로더 - 무료 온라인 동영상 다운로드 도구',
+    ogDesc: 'YouTube 동영상, Twitter/X 미디어를 무료로 다운로드. 링크만 붙여넣으면 바로 다운로드 URL을 얻을 수 있습니다.',
+  },
+  'es': {
+    title: 'Descargador de Medios',
+    subtitle: 'Pega el enlace, detecta la plataforma y obtén la URL de descarga',
+    placeholder: 'Pega enlace de Twitter / YouTube...',
+    btn: 'Descargar',
+    history: 'Historial',
+    clear: 'Borrar',
+    footer: 'Powered by Workers API · Solo para uso personal',
+    langLabel: 'Español',
+    tooFrequent: s => `Demasiadas solicitudes, intenta de nuevo en ${s}s`,
+    emptyUrl: 'Ingresa una URL',
+    unsupported: 'Plataforma no soportada. Actualmente soporta YouTube y Twitter/X',
+    parsing: name => `Analizando enlace de ${name}...`,
+    parseFail: msg => 'Error: ' + (msg || 'Intenta más tarde'),
+    identified: name => `Detectado: ${name}`,
+    tooFrequentRetry: s => `Demasiadas solicitudes, reintenta en ${s}s`,
+    videoDownload: 'Video (con audio)',
+    audioOnly: 'Solo Audio',
+    download: 'Descargar',
+    originalLink: 'Enlace Original',
+    downloadOptions: 'Opciones de Descarga',
+    image: 'Imagen',
+    selectQuality: 'Seleccionar Calidad',
+    standard: 'Estándar',
+    hasAudio: 'Con Audio',
+    videoOnly: 'Solo Video',
+    mediaFiles: n => `${n} archivo(s) multimedia`,
+    twitterMedia: 'Medios de Twitter',
+    justNow: 'Ahora',
+    minutesAgo: n => `Hace ${n}m`,
+    hoursAgo: n => `Hace ${n}h`,
+    daysAgo: n => `Hace ${n}d`,
+    ogTitle: 'Descargador de Medios - Herramienta Gratuita de Descarga de Video',
+    ogDesc: 'Descarga videos de YouTube y medios de Twitter/X gratis. Pega el enlace y obtén la URL de descarga al instante.',
+  },
+  'fr': {
+    title: 'Téléchargeur de Médias',
+    subtitle: 'Collez le lien, détectez la plateforme et obtenez l\'URL de téléchargement',
+    placeholder: 'Collez le lien Twitter / YouTube...',
+    btn: 'Télécharger',
+    history: 'Historique',
+    clear: 'Effacer',
+    footer: 'Powered by Workers API · Usage personnel uniquement',
+    langLabel: 'Français',
+    tooFrequent: s => `Trop de requêtes, réessayez dans ${s}s`,
+    emptyUrl: 'Veuillez entrer une URL',
+    unsupported: 'Plateforme non supportée. Supporte actuellement YouTube et Twitter/X',
+    parsing: name => `Analyse du lien ${name}...`,
+    parseFail: msg => 'Échec: ' + (msg || 'Réessayez plus tard'),
+    identified: name => `Détecté: ${name}`,
+    tooFrequentRetry: s => `Trop de requêtes, réessayez dans ${s}s`,
+    videoDownload: 'Vidéo (avec audio)',
+    audioOnly: 'Audio Seulement',
+    download: 'Télécharger',
+    originalLink: 'Lien Original',
+    downloadOptions: 'Options de Téléchargement',
+    image: 'Image',
+    selectQuality: 'Choisir la Qualité',
+    standard: 'Standard',
+    hasAudio: 'Avec Audio',
+    videoOnly: 'Vidéo Seulement',
+    mediaFiles: n => `${n} fichier(s) média`,
+    twitterMedia: 'Médias Twitter',
+    justNow: 'À l\'instant',
+    minutesAgo: n => `Il y a ${n}m`,
+    hoursAgo: n => `Il y a ${n}h`,
+    daysAgo: n => `Il y a ${n}j`,
+    ogTitle: 'Téléchargeur de Médias - Outil Gratuit de Téléchargement Vidéo',
+    ogDesc: 'Téléchargez des vidéos YouTube et des médias Twitter/X gratuitement. Collez le lien et obtenez l\'URL instantanément.',
+  },
+  'de': {
+    title: 'Medien-Downloader',
+    subtitle: 'Link einfügen, Plattform erkennen, Download-URL erhalten',
+    placeholder: 'Twitter / YouTube Link einfügen...',
+    btn: 'Herunterladen',
+    history: 'Verlauf',
+    clear: 'Löschen',
+    footer: 'Powered by Workers API · Nur für den persönlichen Gebrauch',
+    langLabel: 'Deutsch',
+    tooFrequent: s => `Zu häufig, bitte in ${s}s erneut versuchen`,
+    emptyUrl: 'Bitte eine URL eingeben',
+    unsupported: 'Nicht unterstützte Plattform. Unterstützt derzeit YouTube und Twitter/X',
+    parsing: name => `${name} Link wird analysiert...`,
+    parseFail: msg => 'Fehler: ' + (msg || 'Bitte später erneut versuchen'),
+    identified: name => `Erkannt: ${name}`,
+    tooFrequentRetry: s => `Zu viele Anfragen, bitte in ${s}s erneut versuchen`,
+    videoDownload: 'Video (mit Audio)',
+    audioOnly: 'Nur Audio',
+    download: 'Herunterladen',
+    originalLink: 'Originaler Link',
+    downloadOptions: 'Download-Optionen',
+    image: 'Bild',
+    selectQuality: 'Qualität wählen',
+    standard: 'Standard',
+    hasAudio: 'Mit Audio',
+    videoOnly: 'Nur Video',
+    mediaFiles: n => `${n} Mediendatei(en)`,
+    twitterMedia: 'Twitter Medien',
+    justNow: 'Gerade eben',
+    minutesAgo: n => `Vor ${n}m`,
+    hoursAgo: n => `Vor ${n}h`,
+    daysAgo: n => `Vor ${n}T`,
+    ogTitle: 'Medien-Downloader - Kostenloses Online-Video-Download-Tool',
+    ogDesc: 'YouTube-Videos und Twitter/X-Medien kostenlos herunterladen. Link einfügen und sofort die Download-URL erhalten.',
+  },
+  'pt': {
+    title: 'Downloader de Mídia',
+    subtitle: 'Cole o link, detecte a plataforma e obtenha a URL de download',
+    placeholder: 'Cole o link do Twitter / YouTube...',
+    btn: 'Baixar',
+    history: 'Histórico',
+    clear: 'Limpar',
+    footer: 'Powered by Workers API · Apenas para uso pessoal',
+    langLabel: 'Português',
+    tooFrequent: s => `Muito frequente, tente novamente em ${s}s`,
+    emptyUrl: 'Insira uma URL',
+    unsupported: 'Plataforma não suportada. Atualmente suporta YouTube e Twitter/X',
+    parsing: name => `Analisando link do ${name}...`,
+    parseFail: msg => 'Falha: ' + (msg || 'Tente mais tarde'),
+    identified: name => `Detectado: ${name}`,
+    tooFrequentRetry: s => `Muitas solicitações, tente novamente em ${s}s`,
+    videoDownload: 'Vídeo (com áudio)',
+    audioOnly: 'Apenas Áudio',
+    download: 'Baixar',
+    originalLink: 'Link Original',
+    downloadOptions: 'Opções de Download',
+    image: 'Imagem',
+    selectQuality: 'Selecionar Qualidade',
+    standard: 'Padrão',
+    hasAudio: 'Com Áudio',
+    videoOnly: 'Apenas Vídeo',
+    mediaFiles: n => `${n} arquivo(s) de mídia`,
+    twitterMedia: 'Mídia do Twitter',
+    justNow: 'Agora',
+    minutesAgo: n => `Há ${n}m`,
+    hoursAgo: n => `Há ${n}h`,
+    daysAgo: n => `Há ${n}d`,
+    ogTitle: 'Downloader de Mídia - Ferramenta Gratuita de Download de Vídeo',
+    ogDesc: 'Baixe vídeos do YouTube e mídias do Twitter/X gratuitamente. Cole o link e obtenha a URL de download instantaneamente.',
+  },
+  'ru': {
+    title: 'Загрузчик Медиа',
+    subtitle: 'Вставьте ссылку, определите платформу и получите URL для скачивания',
+    placeholder: 'Вставьте ссылку Twitter / YouTube...',
+    btn: 'Скачать',
+    history: 'История',
+    clear: 'Очистить',
+    footer: 'Powered by Workers API · Только для личного использования',
+    langLabel: 'Русский',
+    tooFrequent: s => `Слишком часто, попробуйте через ${s}с`,
+    emptyUrl: 'Введите URL',
+    unsupported: 'Неподдерживаемая платформа. Поддерживает YouTube и Twitter/X',
+    parsing: name => `Анализ ссылки ${name}...`,
+    parseFail: msg => 'Ошибка: ' + (msg || 'Попробуйте позже'),
+    identified: name => `Обнаружено: ${name}`,
+    tooFrequentRetry: s => `Слишком много запросов, повторите через ${s}с`,
+    videoDownload: 'Видео (с аудио)',
+    audioOnly: 'Только Аудио',
+    download: 'Скачать',
+    originalLink: 'Оригинальная ссылка',
+    downloadOptions: 'Варианты загрузки',
+    image: 'Изображение',
+    selectQuality: 'Выберите качество',
+    standard: 'Стандарт',
+    hasAudio: 'С аудио',
+    videoOnly: 'Только видео',
+    mediaFiles: n => `${n} медиафайл(ов)`,
+    twitterMedia: 'Медиа Twitter',
+    justNow: 'Только что',
+    minutesAgo: n => `${n}м назад`,
+    hoursAgo: n => `${n}ч назад`,
+    daysAgo: n => `${n}д назад`,
+    ogTitle: 'Загрузчик Медиа - Бесплатный Инструмент для Скачивания Видео',
+    ogDesc: 'Скачивайте видео YouTube и медиа Twitter/X бесплатно. Вставьте ссылку и получите URL для скачивания мгновенно.',
+  },
+  'ar': {
+    title: 'محمل الوسائط',
+    subtitle: 'الصق الرابط، اكتشف المنصة واحصل على رابط التحميل',
+    placeholder: 'الصق رابط Twitter / YouTube...',
+    btn: 'تحميل',
+    history: 'السجل',
+    clear: 'مسح',
+    footer: 'Powered by Workers API · للاستخدام الشخصي فقط',
+    langLabel: 'العربية',
+    tooFrequent: s => `طلبات كثيرة، حاول مرة أخرى بعد ${s} ثانية`,
+    emptyUrl: 'أدخل رابطاً',
+    unsupported: 'منصة غير مدعومة. يدعم حالياً YouTube و Twitter/X',
+    parsing: name => `جاري تحليل رابط ${name}...`,
+    parseFail: msg => 'فشل: ' + (msg || 'حاول لاحقاً'),
+    identified: name => `تم الكشف: ${name}`,
+    tooFrequentRetry: s => `طلبات كثيرة، أعد المحاولة بعد ${s} ثانية`,
+    videoDownload: 'فيديو (مع صوت)',
+    audioOnly: 'صوت فقط',
+    download: 'تحميل',
+    originalLink: 'الرابط الأصلي',
+    downloadOptions: 'خيارات التحميل',
+    image: 'صورة',
+    selectQuality: 'اختر الجودة',
+    standard: 'عادي',
+    hasAudio: 'مع صوت',
+    videoOnly: 'فيديو فقط',
+    mediaFiles: n => `${n} ملف(ات) وسائط`,
+    twitterMedia: 'وسائط Twitter',
+    justNow: 'الآن',
+    minutesAgo: n => `منذ ${n} دقيقة`,
+    hoursAgo: n => `منذ ${n} ساعة`,
+    daysAgo: n => `منذ ${n} يوم`,
+    ogTitle: 'محمل الوسائط - أداة مجانية لتحميل الفيديو',
+    ogDesc: 'حمل فيديوهات YouTube ووسائط Twitter/X مجاناً. الصق الرابط واحصل على رابط التحميل فوراً.',
+  },
+};
+
+const LANGS = [
+  { code: 'zh-CN', label: '中文', flag: '🇨🇳' },
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'ja', label: '日本語', flag: '🇯🇵' },
+  { code: 'ko', label: '한국어', flag: '🇰🇷' },
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'pt', label: 'Português', flag: '🇧🇷' },
+  { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+  { code: 'ar', label: 'العربية', flag: '🇸🇦' },
+];
+
+let currentLang = 'zh-CN';
+
+function detectLang() {
+  const urlLang = new URLSearchParams(location.search).get('lang');
+  if (urlLang && T[urlLang]) return urlLang;
+  const saved = localStorage.getItem('lang');
+  if (saved && T[saved]) return saved;
+  const nav = navigator.language;
+  if (T[nav]) return nav;
+  const base = nav.split('-')[0];
+  if (T[base]) return base;
+  return 'zh-CN';
+}
+
+function t(key) {
+  const val = T[currentLang]?.[key] ?? T['zh-CN'][key];
+  return typeof val === 'function' ? val : val;
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  document.documentElement.lang = lang;
+  const s = T[lang];
+  document.getElementById('titleText').textContent = s.title;
+  document.getElementById('subtitleText').textContent = s.subtitle;
+  document.getElementById('urlInput').placeholder = s.placeholder;
+  document.getElementById('fetchBtn').textContent = s.btn;
+  document.getElementById('historyTitle').textContent = s.history;
+  document.getElementById('clearBtn').textContent = s.clear;
+  document.getElementById('footerText').innerHTML = s.footer;
+  document.getElementById('langLabel').textContent = s.langLabel;
+  document.title = s.ogTitle;
+  document.querySelector('meta[name="description"]').setAttribute('content', s.ogDesc);
+  document.querySelector('meta[property="og:title"]').setAttribute('content', s.ogTitle);
+  document.querySelector('meta[property="og:description"]').setAttribute('content', s.ogDesc);
+  document.querySelector('meta[name="twitter:title"]').setAttribute('content', s.ogTitle);
+  document.querySelector('meta[name="twitter:description"]').setAttribute('content', s.ogDesc);
+  document.querySelector('link[rel="canonical"]').setAttribute('href', 'https://download.wolegequ.top/?lang=' + lang);
+  renderHistory();
+  renderLangDropdown();
+}
+
+function toggleLangMenu() {
+  document.getElementById('langDropdown').classList.toggle('show');
+}
+
+function renderLangDropdown() {
+  const dd = document.getElementById('langDropdown');
+  dd.innerHTML = LANGS.map(l =>
+    `<button class="lang-option${l.code === currentLang ? ' active' : ''}" onclick="setLang('${l.code}')">${l.flag} ${l.label}</button>`
+  ).join('');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.lang-switcher')) {
+    document.getElementById('langDropdown').classList.remove('show');
+  }
+});
+
+currentLang = detectLang();
+
 const $ = s => document.querySelector(s);
 const urlInput = $('#urlInput');
 const fetchBtn = $('#fetchBtn');
@@ -157,25 +647,25 @@ async function handleFetch() {
   const elapsed = now - lastFetch;
   if (elapsed < CLIENT_COOLDOWN) {
     const wait = Math.ceil((CLIENT_COOLDOWN - elapsed) / 1000);
-    showStatus('error', `操作太频繁，请 ${wait} 秒后再试`);
+    showStatus('error', t('tooFrequent')(wait));
     return;
   }
 
   const rawUrl = urlInput.value.trim();
-  if (!rawUrl) { showStatus('error', '请输入链接地址'); return; }
+  if (!rawUrl) { showStatus('error', t('emptyUrl')); return; }
 
   let url = rawUrl;
   if (!url.startsWith('http')) url = 'https://' + url;
 
   const platform = detectPlatform(url);
   if (!platform) {
-    showStatus('error', '暂不支持该平台，目前支持 YouTube 和 Twitter/X');
+    showStatus('error', t('unsupported'));
     return;
   }
 
   lastFetch = now;
   fetchBtn.disabled = true;
-  showStatus('loading', `正在解析 ${platform.name} 链接...`);
+  showStatus('loading', t('parsing')(platform.name));
   resultEl.innerHTML = '';
 
   try {
@@ -192,7 +682,7 @@ async function handleFetch() {
       addHistory(url, platform);
     }
   } catch (e) {
-    showStatus('error', '解析失败：' + (e.message || '请稍后重试'));
+    showStatus('error', t('parseFail')(e.message));
   } finally {
     fetchBtn.disabled = false;
   }
@@ -208,7 +698,7 @@ function startCooldown(seconds) {
       hideStatus();
       return;
     }
-    showStatus('error', `请求过于频繁，请 ${remaining} 秒后重试`);
+    showStatus('error', t('tooFrequentRetry')(remaining));
     remaining--;
     cooldownTimer = setTimeout(tick, 1000);
   };
@@ -221,7 +711,7 @@ async function apiFetch(path) {
     const data = await resp.json();
     const retry = data.retryAfter || 60;
     startCooldown(retry);
-    throw new Error(data.message || `请求过于频繁，请 ${retry} 秒后重试`);
+    throw new Error(data.message || t('tooFrequentRetry')(retry));
   }
   const data = await resp.json();
   if (data.error) throw new Error(data.message || data.error);
@@ -249,20 +739,20 @@ function renderYouTube(data, url, platform) {
 
   let html = `<div class="result-card">
     <div class="result-header">
-      <img class="result-thumb" src="${esc(thumb)}" onerror="this.style.display='none'" alt="">
+      <img class="result-thumb" src="${esc(thumb)}" onerror="this.style.display='none'" alt="${esc(data.title)}">
       <div class="result-info">
         <h3>${esc(data.title)}</h3>
         <div class="result-meta">
           <span>&#128100; ${esc(data.author)}</span>
           ${dur ? `<span>&#9201; ${dur}</span>` : ''}
-          <span>&#128279; <a href="${esc(url)}" target="_blank" style="color:var(--accent2);text-decoration:none">原始链接</a></span>
+          <span>&#128279; <a href="${esc(url)}" target="_blank" style="color:var(--accent2);text-decoration:none">${t('originalLink')}</a></span>
         </div>
       </div>
     </div>
     <div class="download-list">`;
 
   if (data.videos?.length) {
-    html += `<h4>&#127909; 视频下载 (含音频)</h4>`;
+    html += `<h4>&#127909; ${t('videoDownload')}</h4>`;
     const merged = findMergedVideoAudio(data.videos, data.audios);
     for (const v of merged) {
       html += `<div class="download-item">
@@ -270,13 +760,13 @@ function renderYouTube(data, url, platform) {
           <span class="dl-badge badge-video">${esc(v.quality)}</span>
           <span class="dl-detail">${esc(v.desc)}</span>
         </div>
-        <a class="dl-btn" href="${esc(v.url)}" target="_blank" rel="noopener">&#11015; 下载</a>
+        <a class="dl-btn" href="${esc(v.url)}" target="_blank" rel="noopener">&#11015; ${t('download')}</a>
       </div>`;
     }
   }
 
   if (data.audios?.length) {
-    html += `<h4 style="margin-top:16px">&#127925; 仅音频</h4>`;
+    html += `<h4 style="margin-top:16px">&#127925; ${t('audioOnly')}</h4>`;
     for (const a of data.audios) {
       const br = a.bitrate ? Math.round(a.bitrate / 1000) + 'kbps' : '';
       html += `<div class="download-item">
@@ -284,7 +774,7 @@ function renderYouTube(data, url, platform) {
           <span class="dl-badge badge-audio">MP3 / ${esc(br)}</span>
           <span class="dl-detail">${esc(a.mimeType.split(';')[0])}</span>
         </div>
-        <a class="dl-btn audio" href="${esc(a.url)}" target="_blank" rel="noopener">&#11015; 下载</a>
+        <a class="dl-btn audio" href="${esc(a.url)}" target="_blank" rel="noopener">&#11015; ${t('download')}</a>
       </div>`;
     }
   }
@@ -305,7 +795,7 @@ function findMergedVideoAudio(videos, audios) {
     results.push({
       quality: key,
       url: v.url,
-      desc: `${v.width}x${v.height}` + (v.fps ? ` ${v.fps}fps` : '') + (hasAudioTrack ? ' (含音频)' : ' (仅视频)'),
+      desc: `${v.width}x${v.height}` + (v.fps ? ` ${v.fps}fps` : '') + (hasAudioTrack ? ` (${t('hasAudio')})` : ` (${t('videoOnly')})`),
     });
     if (results.length >= 5) break;
   }
@@ -320,35 +810,35 @@ function renderTwitter(data, url, platform) {
     <div class="result-header">
       ${thumb ? `<img class="result-thumb" src="${esc(thumb)}" onerror="this.style.display='none'" alt="">` : ''}
       <div class="result-info">
-        <h3>${esc(data.text || 'Twitter 媒体')}</h3>
+        <h3>${esc(data.text || t('twitterMedia'))}</h3>
         <div class="result-meta">
           ${data.author ? `<span>&#64;${esc(data.author)}</span>` : ''}
-          <span>共 ${data.media.length} 个媒体文件</span>
-          <span>&#128279; <a href="${esc(url)}" target="_blank" style="color:var(--accent2);text-decoration:none">原始链接</a></span>
+          <span>${t('mediaFiles')(data.media.length)}</span>
+          <span>&#128279; <a href="${esc(url)}" target="_blank" style="color:var(--accent2);text-decoration:none">${t('originalLink')}</a></span>
         </div>
       </div>
     </div>
     <div class="download-list">
-      <h4>下载选项</h4>`;
+      <h4>${t('downloadOptions')}</h4>`;
 
   data.media.forEach((m, i) => {
     if (m.type === 'photo') {
       html += `<div class="download-item">
         <div class="dl-info">
-          <span class="dl-badge badge-image">&#128247; 图片 #${i + 1}</span>
-          <span class="dl-detail">原始分辨率</span>
+          <span class="dl-badge badge-image">&#128247; ${t('image')} #${i + 1}</span>
+          <span class="dl-detail">${t('standard')}</span>
         </div>
-        <a class="dl-btn" href="${esc(m.url)}" target="_blank" rel="noopener">&#11015; 下载</a>
+        <a class="dl-btn" href="${esc(m.url)}" target="_blank" rel="noopener">&#11015; ${t('download')}</a>
       </div>`;
     } else if (m.type === 'video' || m.type === 'gif') {
-      const label = m.type === 'gif' ? 'GIF' : '视频';
+      const label = m.type === 'gif' ? 'GIF' : 'Video';
       if (m.variants?.length > 1) {
-        html += `<h4 style="margin-top:12px">${m.type === 'gif' ? '&#127909;' : '&#127909;'} ${label} #${i + 1} - 选择画质</h4>`;
+        html += `<h4 style="margin-top:12px">&#127909; ${label} #${i + 1} - ${t('selectQuality')}</h4>`;
         const unique = [];
         const brSeen = new Set();
         for (const v of m.variants) {
           const br = v.bitrate || 0;
-          const brLabel = br ? Math.round(br / 1000) + 'kbps' : '标准';
+          const brLabel = br ? Math.round(br / 1000) + 'kbps' : t('standard');
           if (brSeen.has(brLabel)) continue;
           brSeen.add(brLabel);
           unique.push({ ...v, brLabel });
@@ -360,7 +850,7 @@ function renderTwitter(data, url, platform) {
               <span class="dl-badge badge-video">${esc(v.brLabel)}</span>
               <span class="dl-detail">MP4</span>
             </div>
-            <a class="dl-btn" href="${esc(v.url)}" target="_blank" rel="noopener">&#11015; 下载</a>
+            <a class="dl-btn" href="${esc(v.url)}" target="_blank" rel="noopener">&#11015; ${t('download')}</a>
           </div>`;
         }
       } else {
@@ -369,7 +859,7 @@ function renderTwitter(data, url, platform) {
             <span class="dl-badge badge-video">&#127909; ${label} #${i + 1}</span>
             <span class="dl-detail">MP4</span>
           </div>
-          <a class="dl-btn" href="${esc(m.url)}" target="_blank" rel="noopener">&#11015; 下载</a>
+          <a class="dl-btn" href="${esc(m.url)}" target="_blank" rel="noopener">&#11015; ${t('download')}</a>
         </div>`;
       }
     }
@@ -392,7 +882,7 @@ urlInput.addEventListener('paste', () => {
     const v = urlInput.value.trim();
     if (v) {
       const p = detectPlatform(v.startsWith('http') ? v : 'https://' + v);
-      if (p) showStatus('success', `已识别: ${p.name}`);
+      if (p) showStatus('success', t('identified')(p.name));
       else hideStatus();
     }
   }, 100);
@@ -419,12 +909,14 @@ function renderHistory() {
 }
 function timeAgo(t) {
   const s = Math.floor((Date.now() - t) / 1000);
-  if (s < 60) return '刚刚';
-  if (s < 3600) return Math.floor(s / 60) + '分钟前';
-  if (s < 86400) return Math.floor(s / 3600) + '小时前';
-  return Math.floor(s / 86400) + '天前';
+  if (s < 60) return T[currentLang]?.justNow ?? '刚刚';
+  if (s < 3600) return (T[currentLang]?.minutesAgo ?? (n => `${n}分钟前`))(Math.floor(s / 60));
+  if (s < 86400) return (T[currentLang]?.hoursAgo ?? (n => `${n}小时前`))(Math.floor(s / 3600));
+  return (T[currentLang]?.daysAgo ?? (n => `${n}天前`))(Math.floor(s / 86400));
 }
 function clearHistory() { localStorage.removeItem('dl_history'); renderHistory(); }
+
+setLang(currentLang);
 renderHistory();
 </script>
 </body>
