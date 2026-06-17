@@ -805,6 +805,9 @@ function findMergedVideoAudio(videos, audios) {
 function renderTwitter(data, url, platform) {
   const firstMedia = data.media?.[0];
   const thumb = firstMedia?.type === 'photo' ? firstMedia.url : '';
+  const tid = data.tweetId || 'tweet';
+  // Twitter CDN 有防盗链，下载链接统一走 /api/proxy 流式代理
+  const proxy = (mediaUrl, filename) => '/api/proxy?url=' + encodeURIComponent(mediaUrl) + '&filename=' + encodeURIComponent(filename);
 
   let html = `<div class="result-card">
     <div class="result-header">
@@ -828,7 +831,7 @@ function renderTwitter(data, url, platform) {
           <span class="dl-badge badge-image">&#128247; ${t('image')} #${i + 1}</span>
           <span class="dl-detail">${t('standard')}</span>
         </div>
-        <a class="dl-btn" href="${esc(m.url)}" target="_blank" rel="noopener">&#11015; ${t('download')}</a>
+        <a class="dl-btn" href="${esc(proxy(m.url, `tweet_${tid}_img_${i + 1}.jpg`))}" target="_blank" rel="noopener">&#11015; ${t('download')}</a>
       </div>`;
     } else if (m.type === 'video' || m.type === 'gif') {
       const label = m.type === 'gif' ? 'GIF' : 'Video';
@@ -845,21 +848,23 @@ function renderTwitter(data, url, platform) {
           if (unique.length >= 4) break;
         }
         for (const v of unique) {
+          const brTag = v.bitrate ? Math.round(v.bitrate / 1000) + 'kbps' : 'std';
           html += `<div class="download-item">
             <div class="dl-info">
               <span class="dl-badge badge-video">${esc(v.brLabel)}</span>
               <span class="dl-detail">MP4</span>
             </div>
-            <a class="dl-btn" href="${esc(v.url)}" target="_blank" rel="noopener">&#11015; ${t('download')}</a>
+            <a class="dl-btn" href="${esc(proxy(v.url, `tweet_${tid}_video_${i + 1}_${brTag}.mp4`))}" target="_blank" rel="noopener">&#11015; ${t('download')}</a>
           </div>`;
         }
       } else {
+        const kind = m.type === 'gif' ? 'gif' : 'video';
         html += `<div class="download-item">
           <div class="dl-info">
             <span class="dl-badge badge-video">&#127909; ${label} #${i + 1}</span>
             <span class="dl-detail">MP4</span>
           </div>
-          <a class="dl-btn" href="${esc(m.url)}" target="_blank" rel="noopener">&#11015; ${t('download')}</a>
+          <a class="dl-btn" href="${esc(proxy(m.url, `tweet_${tid}_${kind}_${i + 1}.mp4`))}" target="_blank" rel="noopener">&#11015; ${t('download')}</a>
         </div>`;
       }
     }
